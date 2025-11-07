@@ -12,7 +12,7 @@ import java.net.URI;
 public class Main {
 
     // URL de base du serveur
-    public static final String BASE_URI = "http://localhost:8080/api/";
+    public static final String BASE_URI = "http://localhost:8080";
 
     public static void main(String[] args) throws IOException {
         // 1️⃣ Initialisation JPA

@@ -1,0 +1,136 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "JMeter Benchmark Dashboard",
+    "tags": ["jmeter", "performance", "REST"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 1,
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Temps moyen (avg)",
+        "gridPos": {"x":0,"y":0,"w":24,"h":8},
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps":[
+                {"value": null,"color":"green"},
+                {"value": 500,"color":"orange"},
+                {"value": 1000,"color":"red"}
+              ]
+            }
+          }
+        },
+        "targets": [
+          {
+            "query": "from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r) => r._measurement==\"jmeter\" and r._field==\"avg\" and r.threadGroup==\"READ-heavy\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId": "READ"
+          },
+          {
+            "query": "from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r) => r._measurement==\"jmeter\" and r._field==\"avg\" and r.threadGroup==\"JOIN-filter\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId": "JOIN"
+          },
+          {
+            "query": "from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r) => r._measurement==\"jmeter\" and r._field==\"avg\" and r.threadGroup==\"MIXED\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId": "MIXED"
+          },
+          {
+            "query": "from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r) => r._measurement==\"jmeter\" and r._field==\"avg\" and r.threadGroup==\"HEAVY-body\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId": "HEAVY"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Temps min / max",
+        "gridPos": {"x":0,"y":8,"w":24,"h":8},
+        "fieldConfig": {
+          "defaults": {"color": {"mode":"palette-classic"}}
+        },
+        "targets": [
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=>r._measurement==\"jmeter\" and r._field==\"min\" and r.threadGroup==\"READ-heavy\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"READ_MIN"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=>r._measurement==\"jmeter\" and r._field==\"max\" and r.threadGroup==\"READ-heavy\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"READ_MAX"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=>r._measurement==\"jmeter\" and r._field==\"min\" and r.threadGroup==\"JOIN-filter\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"JOIN_MIN"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=>r._measurement==\"jmeter\" and r._field==\"max\" and r.threadGroup==\"JOIN-filter\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"JOIN_MAX"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Throughput",
+        "gridPos": {"x":0,"y":16,"w":24,"h":8},
+        "fieldConfig": {
+          "defaults": {"color":{"mode":"palette-classic"}}
+        },
+        "targets":[
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"throughput\" and r.threadGroup==\"READ-heavy\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"READ_TH"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"throughput\" and r.threadGroup==\"JOIN-filter\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"JOIN_TH"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"throughput\" and r.threadGroup==\"MIXED\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"MIXED_TH"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"throughput\" and r.threadGroup==\"HEAVY-body\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"HEAVY_TH"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Taux d'erreur (%)",
+        "gridPos":{"x":0,"y":24,"w":24,"h":8},
+        "fieldConfig":{
+          "defaults":{
+            "color":{"mode":"palette-classic"},
+            "thresholds":{
+              "mode":"absolute",
+              "steps":[
+                {"value":null,"color":"green"},
+                {"value":5,"color":"orange"},
+                {"value":10,"color":"red"}
+              ]
+            }
+          }
+        },
+        "targets":[
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"error%\" and r.threadGroup==\"READ-heavy\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"READ_ERR"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"error%\" and r.threadGroup==\"JOIN-filter\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"JOIN_ERR"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"error%\" and r.threadGroup==\"MIXED\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"MIXED_ERR"
+          },
+          {
+            "query":"from(bucket:\"jmeter\") |> range(start:-1h) |> filter(fn:(r)=> r._measurement==\"jmeter\" and r._field==\"error%\" and r.threadGroup==\"HEAVY-body\") |> aggregateWindow(every:10s, fn:mean)",
+            "refId":"HEAVY_ERR"
+          }
+        ]
+      }
+    ]
+  }
+}
